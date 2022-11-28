@@ -1,6 +1,7 @@
 package hu.aut.bme.treasurehuntingfrontend.ui.fragments.quests
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import hu.aut.bme.treasurehuntingfrontend.R
 import hu.aut.bme.treasurehuntingfrontend.domain.AcceptUserQuestDto
@@ -24,6 +27,7 @@ class QuestDetailsFragment: Fragment() {
     private lateinit var dialogCreator: DialogCreator
     private val questApi: QuestApiInteractor = QuestApiInteractor()
     private val userQuestApi: UserQuestApiInteractor = UserQuestApiInteractor()
+    private lateinit var handleAnswerBox: (open: Boolean)->Unit
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +37,7 @@ class QuestDetailsFragment: Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_quest_details, container, false)
         dialogCreator = DialogCreator(root.context)
+        val questId: Long =  arguments?.getLong("quest_id") ?: 0L
         val tName: TextView  = root.findViewById(R.id.text_name)
 
         val tLongitude: TextView = root.findViewById(R.id.text_longitude)
@@ -41,7 +46,7 @@ class QuestDetailsFragment: Fragment() {
 
         val layoutActiveQuest: LinearLayout = root.findViewById(R.id.layout_active_quest)
         val tDescription: TextView = root.findViewById(R.id.text_description)
-        val etAnswer: EditText = root.findViewById(R.id.answer_text_input)
+        val etAnswer: EditText = root.findViewById(R.id.answer_edit_text)
         val rwOptions: RecyclerView = root.findViewById(R.id.recycler_view)
         rwOptions.adapter = QuestDetailsOptionsAdapter(listOf())
         val bFinish: Button = root.findViewById(R.id.bFinish)
@@ -49,7 +54,18 @@ class QuestDetailsFragment: Fragment() {
 
         val bAccept: Button = root.findViewById(R.id.bAccept)
         val bSuggest: Button = root.findViewById(R.id.bSuggest)
-        val questId = 0L
+
+        handleAnswerBox = { open ->
+            if(open) {
+                layoutActiveQuest.visibility = View.VISIBLE
+                bAccept.visibility = View.GONE
+            }
+            else {
+                layoutActiveQuest.visibility = View.GONE
+                bAccept.visibility = View.VISIBLE
+            }
+        }
+
         questApi.getQuest(questId,{
             tName.text = it.name
             tLatitude.text = it.latitude.toString()
@@ -60,15 +76,9 @@ class QuestDetailsFragment: Fragment() {
                 rwOptions.visibility = View.VISIBLE
                 rwOptions.adapter=QuestDetailsOptionsAdapter(it.options.split(":"))
             }
-            userQuestApi.getState(questId, { id, _ ->
-                if(id == Quest.STARTED) {
-                    layoutActiveQuest.visibility = View.VISIBLE
-                    bAccept.visibility = View.GONE
-                }
-                else {
-                    layoutActiveQuest.visibility = View.GONE
-                    bAccept.visibility = View.VISIBLE
-                }
+            userQuestApi.getState(questId, { id ->
+               handleAnswerBox(id == Quest.STARTED)
+
             }, {})
 
         },{
@@ -78,8 +88,8 @@ class QuestDetailsFragment: Fragment() {
         bFinish.setOnClickListener{
             val answer = etAnswer.text.toString()
             userQuestApi.finish(questId, AnswerUserQuestDto(answer),
-                { response, _ ->
-                    if( response.lowercase(Locale.ROOT) !="done") {
+                { response ->
+                    if( response.status.lowercase(Locale.ROOT) !="right") {
                         dialogCreator.createDialog(
                             "Quest not finished",
                             "Wrong answer, Quest was not finished."
@@ -91,6 +101,7 @@ class QuestDetailsFragment: Fragment() {
                             "Quest finished",
                             "Right answer, Quest was finished."
                         )
+                        handleAnswerBox(false)
                     }
 
             },{
@@ -99,11 +110,12 @@ class QuestDetailsFragment: Fragment() {
         }
 
         bAbandon.setOnClickListener{
-            userQuestApi.abandon(questId, { _, code ->
+            userQuestApi.abandon(questId, {  code ->
                 if(code!=200){
                     dialogCreator.createDialog("Abandonment error", "Quest was not abandoned")
                     return@abandon
                 }
+                handleAnswerBox(false)
                 dialogCreator.createDialog("Abandonment success", "Quest was abandoned")
             },{
                 dialogCreator.createDialog("Network error", "Something went wrong.")
@@ -111,14 +123,22 @@ class QuestDetailsFragment: Fragment() {
         }
 
         bAccept.setOnClickListener{
-            userQuestApi.accept(AcceptUserQuestDto(0f,0f, questId), { _ ,status ->
-                if(status != 200)
-                    dialogCreator.createDialog("Quest acceptation error", "Quest was not accepted")
+            userQuestApi.accept(AcceptUserQuestDto(0f,0f, questId), onSuccess@{ status ->
+                if(status != 200) {
+                    dialogCreator.createDialog("Quest acceptation error", "${status}: Quest was not accepted")
+                    return@onSuccess
+                }
+                dialogCreator.createDialog("Quest accepted", "Quest was accepted")
+                handleAnswerBox(true)
             }, {
                 dialogCreator.createDialog("Network error", "Something went wrong.")
             })
         }
 
+        bSuggest.setOnClickListener{
+            val bundle = bundleOf("quest_id" to questId)
+            NavHostFragment.findNavController(this).navigate(R.id.action_navigation_quest_detail_to_navigation_suggestion, bundle)
+        }
 
         return root
     }

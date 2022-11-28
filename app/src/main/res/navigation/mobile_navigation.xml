@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_profile">
+    app:startDestination="@+id/navigation_map">
 
     <fragment
         android:id="@+id/navigation_quests"
@@ -49,9 +49,9 @@
 
     <fragment
         android:id="@+id/navigation_quest_detail"
-        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.quests.QuestsFragment"
-        android:label="@string/text_modify_profile"
-        tools:layout="@layout/fragment_quests" >
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.quests.QuestDetailsFragment"
+        android:label="@string/title_quest"
+        tools:layout="@layout/fragment_quest_details" >
         <action
             android:id="@+id/action_navigation_quest_detail_to_navigation_suggestion"
             app:destination="@id/navigation_suggestion" />

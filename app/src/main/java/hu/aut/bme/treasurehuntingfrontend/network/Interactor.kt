@@ -1,6 +1,7 @@
 package hu.aut.bme.treasurehuntingfrontend.network
 
 import android.os.Handler
+import android.util.Log
 import retrofit2.Call
 
 
@@ -30,15 +31,16 @@ open class Interactor{
 
     protected fun <T> runCallOnBackgroundThreadWithStatusCode(
         call: Call<T>,
-        onSuccess: (T, Int) -> Unit,
+        onSuccess: (Int) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         val handler = Handler()
         Thread {
             try {
                 val response = call.execute()
-                val body = response.body()!!
-                handler.post { onSuccess(body, response.code()) }
+                Log.d("Network Fetch", "runCallOnBackgroundThreadWithStatusCode response: $response")
+                val code = if(response.code() == 406) 200 else response.code()
+                handler.post { onSuccess(code) }
 
             } catch (e: Exception) {
                 e.printStackTrace()

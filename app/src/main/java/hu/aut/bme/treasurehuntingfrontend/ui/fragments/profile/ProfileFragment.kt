@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import hu.aut.bme.treasurehuntingfrontend.R
 import hu.aut.bme.treasurehuntingfrontend.network.auth.AuthApiInteractor
 import hu.aut.bme.treasurehuntingfrontend.ui.messaging.DialogCreator
@@ -37,7 +38,7 @@ class ProfileFragment : Fragment() {
         })
 
         bModify.setOnClickListener{
-
+            NavHostFragment.findNavController(this).navigate(R.id.action_navigation_profile_to_navigation_modify_profile)
         }
         return root
     }

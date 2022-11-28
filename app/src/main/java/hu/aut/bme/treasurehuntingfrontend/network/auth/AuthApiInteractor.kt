@@ -42,7 +42,7 @@ class AuthApiInteractor: Interactor() {
 
     fun modifyProfile(
         user: User,
-        onSuccess: (Void, Int)->Unit,
+        onSuccess: ( Int)->Unit,
         onError: (Throwable)-> Unit
     ){
         runCallOnBackgroundThreadWithStatusCode(api.modifyProfile("Basic $TOKEN", user),  onSuccess,  onError)

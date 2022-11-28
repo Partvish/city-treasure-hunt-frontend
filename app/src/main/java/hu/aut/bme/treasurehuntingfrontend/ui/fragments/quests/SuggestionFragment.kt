@@ -27,7 +27,8 @@ class SuggestionFragment:Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val root = inflater.inflate(R.layout.fragment_quests, container, false)
+        val root = inflater.inflate(R.layout.fragment_suggestion, container, false)
+        val questId: Long =  arguments?.getLong("quest_id")?: 0L
         dialogCreator = DialogCreator(root.context)
         val bSend: Button = root.findViewById(R.id.bSend)
         val etSuggestion: EditText = root.findViewById(R.id.text_suggestion)
@@ -38,9 +39,9 @@ class SuggestionFragment:Fragment() {
             }
             api.postSuggestion(Suggestion(
                 userId = User.ID,
-                questId = 0,
-                description = etSuggestion.text.toString()
-            ),success@{ _, status ->
+                questId = questId,
+                description = etSuggestion.text.toString().trim()
+            ),success@{ status ->
                 if(status!=200) {
                     dialogCreator.createDialog("Suggestion error", "Bad request")
                     return@success

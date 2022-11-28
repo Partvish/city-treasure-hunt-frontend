@@ -1,15 +1,21 @@
 package hu.aut.bme.treasurehuntingfrontend.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import hu.aut.bme.treasurehuntingfrontend.R
 import hu.aut.bme.treasurehuntingfrontend.domain.Quest
 import hu.aut.bme.treasurehuntingfrontend.domain.Score
+import hu.aut.bme.treasurehuntingfrontend.ui.fragments.quests.QuestsFragment
 
-class QuestAdapter (private val dataSet: MutableList<Quest>) :
+class QuestAdapter (private val dataSet: MutableList<Quest>, private val navigate: (Long) -> Unit) :
     RecyclerView.Adapter<QuestAdapter.ViewHolder>() {
 
     /**
@@ -19,11 +25,13 @@ class QuestAdapter (private val dataSet: MutableList<Quest>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val vUsername: TextView
         val vPoint: TextView
+        val vView: View
 
         init {
             // Define click listener for the ViewHolder's View.
             vUsername = view.findViewById(R.id.text_username)
             vPoint = view.findViewById(R.id.text_point)
+            vView = view
         }
     }
 
@@ -32,7 +40,6 @@ class QuestAdapter (private val dataSet: MutableList<Quest>) :
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.rowitem_leaderboard, viewGroup, false)
-
         return ViewHolder(view)
     }
 
@@ -43,6 +50,9 @@ class QuestAdapter (private val dataSet: MutableList<Quest>) :
         // contents of the view with that element
         viewHolder.vUsername.text = dataSet[position].name
         viewHolder.vPoint.text = dataSet[position].point.toString()
+        viewHolder.vView.setOnClickListener{
+            navigate(dataSet[position].id)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

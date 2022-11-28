@@ -17,7 +17,7 @@ class SuggestionApiInteractor: Interactor() {
 
     fun postSuggestion(
         suggestion: Suggestion,
-        onSuccess: (Void, Int)->Unit,
+        onSuccess: (Int)->Unit,
         onError: (Throwable)-> Unit
     )
     {

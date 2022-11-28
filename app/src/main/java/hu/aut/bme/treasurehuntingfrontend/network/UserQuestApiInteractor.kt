@@ -2,6 +2,7 @@ package hu.aut.bme.treasurehuntingfrontend.network
 
 import hu.aut.bme.treasurehuntingfrontend.domain.AcceptUserQuestDto
 import hu.aut.bme.treasurehuntingfrontend.domain.AnswerUserQuestDto
+import hu.aut.bme.treasurehuntingfrontend.domain.FinishUserQuestDto
 import hu.aut.bme.treasurehuntingfrontend.domain.Suggestion
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -10,7 +11,7 @@ class UserQuestApiInteractor: Interactor() {
     private val api:UserQuestApiService
     init{
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(Interactor.BASEURL)
+            .baseUrl(BASEURL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -19,7 +20,7 @@ class UserQuestApiInteractor: Interactor() {
 
     fun accept(
         acq: AcceptUserQuestDto,
-        onSuccess: (Void, Int)->Unit,
+        onSuccess: ( Int)->Unit,
         onError: (Throwable)-> Unit
     )
     {
@@ -28,7 +29,7 @@ class UserQuestApiInteractor: Interactor() {
 
     fun abandon(
         userQuestId: Long,
-        onSuccess: (Void, Int)->Unit,
+        onSuccess: ( Int)->Unit,
         onError: (Throwable)-> Unit
     )
     {
@@ -38,19 +39,19 @@ class UserQuestApiInteractor: Interactor() {
     fun finish(
         questId: Long,
         answer: AnswerUserQuestDto,
-        onSuccess: (String, Int)->Unit,
+        onSuccess: (FinishUserQuestDto)->Unit,
         onError: (Throwable)-> Unit
     )
     {
-        runCallOnBackgroundThreadWithStatusCode(api.finish("Basic ${Interactor.TOKEN}", questId, answer),  onSuccess,  onError)
+        runCallOnBackgroundThread(api.finish("Basic ${Interactor.TOKEN}", questId, answer),  onSuccess,  onError)
     }
 
     fun getState(
         questId: Long,
-        onSuccess: (Int, Int)->Unit,
+        onSuccess: ( Int)->Unit,
         onError: (Throwable)-> Unit
     )
     {
-        runCallOnBackgroundThreadWithStatusCode(api.getState("Basic ${Interactor.TOKEN}", questId),  onSuccess,  onError)
+        runCallOnBackgroundThread(api.getState("Basic ${Interactor.TOKEN}", questId),  onSuccess,  onError)
     }
 }

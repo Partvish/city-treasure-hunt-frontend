@@ -48,7 +48,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/longitude"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 />
             <TextView
@@ -57,7 +57,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 tools:text="24.4"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 />
         </LinearLayout>
         <LinearLayout
@@ -70,7 +70,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/latitude"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 />
             <TextView
@@ -79,7 +79,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 tools:text="35.4"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 />
         </LinearLayout>
         <LinearLayout
@@ -92,7 +92,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/points"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 />
             <TextView
@@ -101,7 +101,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 tools:text="5"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -118,17 +118,19 @@
             android:id="@+id/text_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="100dp"
             android:gravity="center_vertical"
             android:layout_marginBottom="10dp"
             tools:text="LOREM IPSUM ajsdhnkjansdajk \nkjansdjnan akjsndkajn\n ajsda"
             />
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="80dp">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/recycler_view"
+                tools:listitem="@layout/rowitem_quest_details_options"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 />
         </ScrollView>
         <com.google.android.material.textfield.TextInputLayout
@@ -139,22 +141,19 @@
             android:hint="@string/answer">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/recycler_view"
+                android:id="@+id/answer_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/rowitem_leaderboard"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/bFinish"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:text="@string/b_finish"
             android:layout_height="wrap_content"/>
         <Button
             android:id="@+id/bAbandon"
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/red"

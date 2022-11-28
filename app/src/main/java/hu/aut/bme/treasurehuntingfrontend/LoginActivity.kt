@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
 import hu.aut.bme.treasurehuntingfrontend.domain.User
+import hu.aut.bme.treasurehuntingfrontend.helper.TokenGenerator
 import hu.aut.bme.treasurehuntingfrontend.network.auth.AuthApiInteractor
 import hu.aut.bme.treasurehuntingfrontend.ui.messaging.DialogCreator
 import java.util.*
@@ -25,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var getUser:()->User?
 
     private val authApiInteractor: AuthApiInteractor = AuthApiInteractor()
+    private val tokenGenerator: TokenGenerator = TokenGenerator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,10 +72,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun createToken(username: String, password: String): String {
-        val pass = "${username}:${password}"
-        return Base64.getEncoder().encodeToString(pass.toByteArray())
-    }
+
 
     private fun changeRegister(isChecked: Boolean){
         register = isChecked
@@ -96,16 +95,15 @@ class LoginActivity : AppCompatActivity() {
             dialogCreator.createDialog("Login Error", "Could not login")
             return*/
             val myIntent = Intent(this@LoginActivity, MainActivity::class.java)
-            myIntent.putExtra("token", createToken("asd", "asd")) //Optional parameters
+            myIntent.putExtra("token", tokenGenerator.createToken("asd", "asd")) //Optional parameters
             this@LoginActivity.startActivity(myIntent)
             return
         }
-        val token = createToken(user.name, user.password)
+        val token = tokenGenerator.createToken(user.name, user.password)
         authApiInteractor.login(token, {
             val myIntent = Intent(this@LoginActivity, MainActivity::class.java)
             myIntent.putExtra("token", token) //Optional parameters
             myIntent.putExtra("user_id", it.id.toString())
-            dialogCreator.createDialog("Login Error", it.id.toString())
             this@LoginActivity.startActivity(myIntent)
         }, {
             dialogCreator.createDialog("Login Error", "Server error. Could not login")
