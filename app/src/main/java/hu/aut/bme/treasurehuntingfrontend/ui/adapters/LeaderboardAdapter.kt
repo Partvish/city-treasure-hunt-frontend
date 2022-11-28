@@ -41,7 +41,7 @@ class LeaderboardAdapter(private val dataSet: MutableList<Score>) :
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.vUsername.text = dataSet[position].userName
-        viewHolder.vPoint.text = dataSet[position].point.toString()
+        viewHolder.vPoint.text = dataSet[position].score.toString()
     }
 
     // Return the size of your dataset (invoked by the layout manager)
