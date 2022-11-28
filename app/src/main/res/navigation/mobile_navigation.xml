@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_profile">
+
+    <fragment
+        android:id="@+id/navigation_quests"
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.quests.QuestsFragment"
+        android:label="@string/title_quests"
+        tools:layout="@layout/fragment_quests" >
+        <action
+            android:id="@+id/action_navigation_quests_to_navigation_quest_detail"
+            app:destination="@id/navigation_quest_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_map"
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.map.MapFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_navigation_map_to_navigation_quest_detail"
+            app:destination="@id/navigation_quest_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_leaderboard" >
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_modify_profile"
+            app:destination="@id/navigation_modify_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_leaderboard"
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.leaderboard.LeaderboardFragment"
+        android:label="@string/title_leaderboard"
+        tools:layout="@layout/fragment_leaderboard" />
+
+    <fragment
+        android:id="@+id/navigation_modify_profile"
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.profile.ModifyProfileFragment"
+        android:label="@string/text_modify_profile"
+        tools:layout="@layout/fragment_modify_profile" />
+
+    <fragment
+        android:id="@+id/navigation_quest_detail"
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.quests.QuestsFragment"
+        android:label="@string/text_modify_profile"
+        tools:layout="@layout/fragment_quests" >
+        <action
+            android:id="@+id/action_navigation_quest_detail_to_navigation_suggestion"
+            app:destination="@id/navigation_suggestion" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_suggestion"
+        android:name="hu.aut.bme.treasurehuntingfrontend.ui.fragments.quests.SuggestionFragment"
+        android:label="@string/title_suggestion"
+        tools:layout="@layout/fragment_suggestion" />
+
+
+</navigation>
